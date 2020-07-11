@@ -2,7 +2,7 @@ __author__ = 'INVESTIGACION'
 
 import sys 
 import os 
-sys.path.append(os.path.abspath("C:/Personal/Articulos/KNN-Greedy/KMRT-SetCovering-4"))
+sys.path.append(os.path.abspath("C:/Personal/Articulos/KNN-Greedy/KMRT-SetCovering-5"))
 
 import Q_Learning as QL
 import solution as sl
@@ -70,7 +70,7 @@ insertResultadoEjecucion =resultadoEjecucion.insert()
 sql = text("""update datos_ejecucion set estado = 'ejecucion', inicio = :inicio
                 where id = 
                 (select id from datos_ejecucion
-                    where estado = 'pendiente' and Nombre_Algoritmo = 'SCA-Q2'
+                    where estado = 'pendiente' and Nombre_Algoritmo = 'SCA-Q3'
                     order by id asc
                     limit 1) returning id, parametros;""")
 
@@ -221,9 +221,9 @@ while True:
             data_iter.append({
                 'id_ejecucion' : idEjecucion
                 ,'fitness_mejor' : BestFitnessGlobal
-                ,'fitness_Iter' : BestFitnessIter
-                ,'iter': i
-                ,'accion': accion[1]
+                ,'fitness_mejor_iteracion' : BestFitnessIter
+                ,'numero_iteracion': i
+                ,'parametros_iteracion': json.dumps({'accion_QL':accion[1]})
                 ,'inicio' : inicio_iter
                 ,'fin' : fin_iter
                 #,'parametros_iteracion' : json.dumps({'nivel': nivel})
@@ -251,9 +251,9 @@ while True:
                 data_iter.append({
                     'id_ejecucion' : idEjecucion
                     ,'fitness_mejor' : BestFitnessGlobal
-                    ,'fitness_Iter' : BestFitnessIter
-                    ,'iter': i
-                    ,'accion': accion[1]
+                    ,'fitness_mejor_iteracion' : BestFitnessIter
+                    ,'numero_iteracion': i
+                    ,'parametros_iteracion': json.dumps({'accion_QL':accion[1]})
                     ,'inicio' : inicio_iter
                     ,'fin' : fin_iter
                     #,'parametros_iteracion' : json.dumps({'nivel': nivel})
@@ -279,5 +279,8 @@ while True:
 
     except Exception as error:   
         updateDatosEjecucion = datosEjecucion.update().where(datosEjecucion.c.id == idEjecucion)
+        deleteDatosIteracion = datosIteracion.delete().where(datosIteracion.c.id_ejecucion == idEjecucion)
+
         connection.execute(updateDatosEjecucion, {'inicio':None,'fin':None, 'estado' : 'pendiente'})
+        connection.execute(deleteDatosIteracion)
         raise error 
