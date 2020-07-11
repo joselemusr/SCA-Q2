@@ -70,7 +70,7 @@ insertResultadoEjecucion =resultadoEjecucion.insert()
 sql = text("""update datos_ejecucion set estado = 'ejecucion', inicio = :inicio
                 where id = 
                 (select id from datos_ejecucion
-                    where estado = 'pendiente' and Nombre_Algoritmo = 'SCA-Q3'
+                    where estado = 'pendiente' and Nombre_Algoritmo = 'SCA-Q2'
                     order by id asc
                     limit 1) returning id, parametros;""")
 
